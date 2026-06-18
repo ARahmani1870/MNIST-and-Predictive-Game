@@ -1,0 +1,106 @@
+[gd_scene format=3 uid="uid://dsyfebdg4gojb"]
+
+[ext_resource type="Script" uid="uid://dds1sur3i07wa" path="res://scripts/pause_menu.gd" id="1_n87rw"]
+[ext_resource type="FontFile" uid="uid://cbrtjjm8ytr5t" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="2_kukqi"]
+[ext_resource type="FontFile" uid="uid://b4rd3u2q7al4u" path="res://assets/fonts/PixelOperator8.ttf" id="3_5d2l8"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=862586782]
+process_mode = 3
+script = ExtResource("1_n87rw")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=4542438]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=694163124]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1889143854]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResumeBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1013403758]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "RESUME"
+
+[node name="RestartBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1807727920]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "RESTART"
+
+[node name="SFXLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=528576904]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "SFX VOLUME
+"
+horizontal_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="PanelContainer/VBoxContainer" unique_id=1360235104]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+
+[node name="BGMLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1026208272]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "BGM VOLUME"
+horizontal_alignment = 1
+
+[node name="BGMSlider" type="HSlider" parent="PanelContainer/VBoxContainer" unique_id=1033397082]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+
+[node name="ControlsBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=684784156]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "CONTROLS"
+
+[node name="CreditsBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=673804706]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "CREDITS"
+
+[node name="ToggleLogBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=685558035]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "TOGGLE ML LOGGING"
+
+[node name="ResetLogBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1403811835]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "RESET ML DATA"
+
+[node name="QuitBtn" type="Button" parent="PanelContainer/VBoxContainer" unique_id=1282808590]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kukqi")
+text = "QUIT"
+
+[node name="InfoLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=883917472]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_5d2l8")
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ResumeBtn" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/RestartBtn" to="." method="_on_restart_pressed"]
+[connection signal="value_changed" from="PanelContainer/VBoxContainer/SFXSlider" to="." method="_on_sfx_changed"]
+[connection signal="value_changed" from="PanelContainer/VBoxContainer/BGMSlider" to="." method="_on_bgm_changed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ControlsBtn" to="." method="_on_controls_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/CreditsBtn" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ToggleLogBtn" to="." method="_on_toggle_log_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ResetLogBtn" to="." method="_on_reset_log_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/QuitBtn" to="." method="_on_quit_pressed"]
