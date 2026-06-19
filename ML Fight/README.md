@@ -1,7 +1,7 @@
 # ML-Fight
 2D combat game based on player behavioural prediction using neural networks.
 
-If you want to just play the game, download it here [Game release on Itch](https://cptprice7.itch.io/). If however you want to train it on your own data, download and install [Godot](https://godotengine.org/), and import this folder into it.
+If you want to just play the game, download it [here](https://cptprice7.itch.io/). If however you want to train it on your own data, download and install [Godot](https://godotengine.org/), and import this folder into it.
 
 This version has the enemy AI based on my behaviour and playstyle. If you wish to train it according to your playstyle, do the following:
 1. Run the game in Godot, press ESC to pause the game, and click on `Toggle ML Data` and turn it on.
