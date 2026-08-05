@@ -12,7 +12,7 @@ config_version=5
 
 config/name="ML Fight"
 run/main_scene="uid://b0ks35lnd8afh"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [audio]
@@ -26,7 +26,7 @@ GameState="*uid://bpix745df8dvg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godotresourcecleaner/plugin.cfg", "res://addons/health_bar_x/plugin.cfg")
+enabled=PackedStringArray("res://addons/health_bar_x/plugin.cfg")
 
 [global_group]
 
