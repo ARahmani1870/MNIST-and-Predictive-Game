@@ -21,15 +21,12 @@ var predicted_action: int = 0
 const ATK_BUFFER: int = 10
 
 func _ready() -> void:
+	# Wait for safety
+	await get_tree().process_frame
 	load_model_weights()
 
 func load_model_weights() -> void:
-	var path = "res://model_weights.json"
-	if not FileAccess.file_exists(path):
-		return
-		
-	var json_string = FileAccess.get_file_as_string(path)
-	var data = JSON.parse_string(json_string)
+	var data = ModelLoader.weights_data
 	
 	if data and data.has("weights") and data.has("biases"):
 		weights = data["weights"]

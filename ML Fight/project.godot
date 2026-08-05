@@ -23,6 +23,7 @@ buses/default_bus_layout="uid://c22h5p1nm4724"
 
 BGMPlayer="*uid://pea5min4ayjp"
 GameState="*uid://bpix745df8dvg"
+ModelLoader="*uid://chpnysednyqv1"
 
 [editor_plugins]
 
