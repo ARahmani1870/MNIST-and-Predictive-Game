@@ -5,9 +5,14 @@ extends Node
 
 var file: FileAccess
 var frames_logged: int = 0
-var file_path: String = "res://combat_data.txt"
+var file_path: String = ""
 
 func _ready() -> void:
+	if OS.has_feature("editor"):
+		file_path = "res://combat_data.txt"
+	else:
+		file_path = OS.get_executable_path().get_base_dir().path_join("combat_data.txt")
+
 	if GameState.logging_enabled:
 		open_file()
 
@@ -29,7 +34,7 @@ func reset_data() -> void:
 		
 	frames_logged = 0
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not GameState.logging_enabled or not is_instance_valid(player) or not is_instance_valid(enemy):
 		return
 
