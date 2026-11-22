@@ -1,11 +1,35 @@
-import numpy as np
+import sys
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir:
+    os.chdir(script_dir)
+
+if not os.path.exists('combat_data.txt'):
+    print("Error: combat_data.txt not found. Run the game in Godot, press ESC, turn on 'Toggle ML Data', and play to record data first.")
+    sys.exit(1)
+
+try:
+    if "--cpu" in sys.argv:
+        raise ImportError
+    import cupy as xp
+    if not xp.cuda.is_available():
+        raise ImportError
+    xp.matmul(xp.zeros((1, 1)), xp.zeros((1, 1)))
+except Exception:
+    import numpy as xp
 import pandas
 import json
 
-data = np.array(pandas.read_csv('combat_data.txt').values)
-np.random.shuffle(data)
-
+data = xp.array(pandas.read_csv('combat_data.txt').values)
 alldp = data.shape[0]
+
+if alldp < 50:
+    print("Error: Not enough combat data to train. Play more matches with 'Toggle ML Data' enabled first.")
+    sys.exit(1)
+
+xp.random.shuffle(data)
+
 forTest = int(0.05 * alldp) # 5% set aside for testing
 forDev = forTest + int(0.1 * alldp) # 10% set aside for dev
 
@@ -29,13 +53,13 @@ devLabels = dev_data[:, -1].astype(int)
 devPics = (dev_data[:, :-1] / 100.0).T
 
 # one-hot mapping for training
-one_hot = np.zeros((datapoints, 8), dtype=int)
-one_hot[np.arange(datapoints), labels] = 1
+one_hot = xp.zeros((datapoints, 8), dtype=int)
+one_hot[xp.arange(datapoints), labels] = 1
 one_hot = one_hot.T
 
 # one-hot mapping for dev
-dev_hot = np.zeros((devDatapoints, 8), dtype=int)
-dev_hot[np.arange(devDatapoints), devLabels] = 1
+dev_hot = xp.zeros((devDatapoints, 8), dtype=int)
+dev_hot[xp.arange(devDatapoints), devLabels] = 1
 dev_hot = dev_hot.T
 
 # 10 input parameters, 8 possible predictions
@@ -45,8 +69,8 @@ weights = list()
 biases = list()
 
 for i in range(len(layers)):
-    weights.append(np.random.randn(layers[i], layers[i - 1]) * np.sqrt(1 / layers[i - 1]))
-    biases.append(np.zeros((layers[i], 1)))
+    weights.append(xp.random.randn(layers[i], layers[i - 1]) * xp.sqrt(1 / layers[i - 1]))
+    biases.append(xp.zeros((layers[i], 1)))
 
 def ReLU(arr):
     ret = arr.copy()
@@ -55,16 +79,16 @@ def ReLU(arr):
     return ret
 
 def ReLU_prime(arr):
-    ret = np.zeros(arr.shape)
+    ret = xp.zeros(arr.shape)
     mask = arr > 0
     ret[mask] = 1
     return ret
 
 def softmax(arr):
     ret = arr.copy()
-    ret -= np.max(ret, axis=0, keepdims=True)
-    denom = np.sum(np.exp(ret), axis=0)
-    ret = np.exp(ret) / denom
+    ret -= xp.max(ret, axis=0, keepdims=True)
+    denom = xp.sum(xp.exp(ret), axis=0)
+    ret = xp.exp(ret) / denom
     return ret
 
 epochs = 10000
@@ -82,7 +106,7 @@ recordBs = list()
 
 for i in range(epochs):
 
-    perm = np.random.permutation(datapoints)
+    perm = xp.random.permutation(datapoints)
     pics = pics[:, perm]
     one_hot = one_hot[:, perm]
 
@@ -100,7 +124,7 @@ for i in range(epochs):
         As = [batchPics,]
 
         for j in range(1, len(layers)):
-            Z = np.matmul(weights[j], As[j - 1]) + biases[j]
+            Z = xp.matmul(weights[j], As[j - 1]) + biases[j]
             Zs.append(Z)
 
             A = ReLU(Z)
@@ -118,14 +142,14 @@ for i in range(epochs):
         deltaBs = list()
 
         for j in range(len(layers) - 1, 0, -1):
-            deltaW = np.matmul(deltaZ, As[j - 1].T) / currentBatchSize
+            deltaW = xp.matmul(deltaZ, As[j - 1].T) / currentBatchSize
             deltaWs.append(deltaW)
 
-            deltaB = np.sum(deltaZ, axis=1, keepdims=True) / currentBatchSize
+            deltaB = xp.sum(deltaZ, axis=1, keepdims=True) / currentBatchSize
             deltaBs.append(deltaB)
 
             if j > 1:
-                deltaZ = np.matmul(weights[j].T, deltaZ) * ReLU_prime(Zs[j - 1])
+                deltaZ = xp.matmul(weights[j].T, deltaZ) * ReLU_prime(Zs[j - 1])
 
         deltaWs.reverse()
         deltaBs.reverse()
@@ -142,7 +166,7 @@ for i in range(epochs):
     As = [devPics,]
 
     for j in range(1, len(layers)):
-        Z = np.matmul(weights[j], As[j - 1]) + biases[j]
+        Z = xp.matmul(weights[j], As[j - 1]) + biases[j]
         Zs.append(Z)
 
         A = ReLU(Z)
@@ -152,7 +176,7 @@ for i in range(epochs):
     pred = softmax(Zs[-1])
     As.append(pred)
 
-    L = (-1 / devDatapoints) * np.sum(dev_hot * np.log(pred + epsilon))
+    L = (-1 / devDatapoints) * xp.sum(dev_hot * xp.log(pred + epsilon))
     
     if bestLoss > L:
         bestLoss = L
@@ -172,7 +196,7 @@ Zs = [testPics,]
 As = [testPics,]
 
 for j in range(1, len(layers)):
-    Z = np.matmul(recordWs[j], As[j - 1]) + recordBs[j]
+    Z = xp.matmul(recordWs[j], As[j - 1]) + recordBs[j]
     Zs.append(Z)
 
     A = ReLU(Z)
@@ -181,16 +205,16 @@ for j in range(1, len(layers)):
 As.pop()
 pred = softmax(Zs[-1])
 
-predictions = np.argmax(pred, axis=0)
-correct = np.sum(predictions == testLabels)
+predictions = xp.argmax(pred, axis=0)
+correct = xp.sum(predictions == testLabels)
 
 print("Accuracy: " + str(round((float(correct) / testDatapoints) * 100, 3)) + "%")
 
 # JSON dump
 
 export_data = {
-    "weights": [w.tolist() for w in recordWs],
-    "biases": [b.tolist() for b in recordBs]
+    "weights": [w.tolist() if hasattr(w, "tolist") else w for w in recordWs],
+    "biases": [b.tolist() if hasattr(b, "tolist") else b for b in recordBs]
 }
 
 with open("model_weights.json", "w") as f:

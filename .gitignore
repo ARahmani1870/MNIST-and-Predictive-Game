@@ -1,3 +1,13 @@
 /ML Fight/.godot/
 /ML Fight/export_presets.cfg
 /ML Fight/combat_data.txt
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# OS and filesystem artifacts
+*:Zone.Identifier
+*Zone.Identifier*
+.DS_Store
+Thumbs.db
